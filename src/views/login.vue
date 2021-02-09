@@ -3,7 +3,12 @@
     <el-form :rules="rules"
              ref="loginForm"
              :model="loginForm"
-             class="loginContainer">
+             class="loginContainer"
+             v-loading="loading"
+             element-loading-text="正在登录中。。。"
+             element-loading-spinner="el-icon-loading"
+             element-loading-background="rgba(0, 0, 0, 0.8)">
+
       <h3 class="loginTitle">系统登录</h3>
       <el-form-item prop="username">
         <el-input type="text"
@@ -21,7 +26,7 @@
                   auto-complete="false"
                   v-model="loginForm.code"
                   placeholder="点击图片更换验证码"
-                  style="width:80%"></el-input>
+                  style="width:60%"></el-input>
       </el-form-item>
       <img :src="captchUrl"
            @click="updateCapthUrl" />
@@ -40,12 +45,13 @@ export default {
   name: 'login',
   data () {
     return {
-      captchUrl: '/captch?time=' + new Date(),
+      captchUrl: '/captche/getCaptche?time=' + new Date(),
       loginForm: {
         username: 'admin',
         password: '123',
         code: ''
       },
+      loading: false,
       checked: true,
       rules: {
         username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -56,12 +62,21 @@ export default {
   },
   methods: {
     updateCapthUrl () {
-      this.captchUrl = '/captch?time=' + new Date()
+      this.captchUrl = '/captche/getCaptche?time=' + new Date()
     },
     submitLoin () {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          alert('submit!');
+          this.postRequest('/login/login', this.loginForm).then(resp => {
+            if (resp) {
+              this.loading = true
+              alert(resp)
+              console.log(resp)
+              const tokenStr = resp.tokenHead + resp.token
+              window.sessionStorage.setItem('tokenStr', tokenStr)
+              this.$router.replace('/home')
+            }
+          })
         } else {
           this.$message.error('请输入所有字段');
           return false;

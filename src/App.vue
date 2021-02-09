@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view />
     <!-- <m-parent></m-parent>
     <button @click="passMsg">传你</button> -->
   </div>

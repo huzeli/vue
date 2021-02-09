@@ -29,5 +29,9 @@ module.exports = {
       "x-invalid-end-tag": false
     }],
     "semi": 0,
+    "eqeqeq": ["off"],
+    "space-before-function-paren": 0,
+    "indent": "off",
+    "quotes": [1, 'single']
   }
 }

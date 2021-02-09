@@ -1,9 +1,11 @@
 let proxyObj = {}
+
 proxyObj['/'] = {
   // websocket
   ws: false,
   target: 'http://localhost:8081',
   changeOrigin: true,
+  // 不重写请求地址
   pathReWrite: {
     '^/': '/'
   }
@@ -12,7 +14,7 @@ proxyObj['/'] = {
 module.exports = {
   devServer: {
     host: 'localhost',
-    port: '8080',
+    port: '8084',
     proxy: proxyObj
   }
 }
