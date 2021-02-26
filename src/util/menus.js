@@ -5,27 +5,32 @@ export const initMenu = (route, state) => {
   if (store.state.routes.length > 0) {
     return
   }
-  getRequest('/system/config/menu').then(data => {
+  getRequest('/system/menu').then(data => {
+    debugger;
     if (data) {
       // 格式化好的Router
       let fmtRoutes = formatRoutes(data)
+      // 添加到router
+      console.log(router)
       router.addRoutes(fmtRoutes)
-      store.commit('initRoutes', formatRoutes)
+      // 将数据存入vuex
+      store.commit('initRoutes', fmtRoutes)
     }
   })
 }
 export const formatRoutes = (routes) => {
   let fmtRoutes = []
-  routes.forEach(routes => {
+  routes.forEach(router => {
     let {
       path,
       component,
       name,
       iconCls,
-      children,
+      children
     } = router
 
     if (children && children instanceof Array) {
+      // 递归
       children = formatRoutes(children)
     }
     let fmRouter = {
@@ -34,8 +39,23 @@ export const formatRoutes = (routes) => {
       iconCls: iconCls,
       children: children,
       component (resolve) {
-        require(['../views' + component + '.vue'])
+        if (component.startsWith('Home')) {
+          require(['../views/' + component + '.vue'], resolve)
+        }
+        if (component.startsWith('Emp')) {
+          require(['../views/emp/' + component + '.vue'], resolve)
+        } else if (component.startsWith('Per')) {
+          require(['../views/per/' + component + '.vue'], resolve)
+        } else if (component.startsWith('Sal')) {
+          require(['../views/sal/' + component + '.vue'], resolve)
+        } else if (component.startsWith('Sta')) {
+          require(['../views/sta/' + component + '.vue'], resolve)
+        } else if (component.startsWith('Sys')) {
+          require(['../views/sys/' + component + '.vue'], resolve)
+        }
       }
     }
+    fmtRoutes.push(fmRouter)
   });
+  return fmtRoutes
 }

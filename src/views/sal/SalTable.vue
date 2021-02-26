@@ -1,5 +1,5 @@
 <template>
-  <div>高级资料</div>
+  <div>工资表</div>
 </template>
 <script>
 export default {

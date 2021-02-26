@@ -1,5 +1,5 @@
 <template>
-  <div>高级资料</div>
+  <div>备份恢复数据库</div>
 </template>
 <script>
 export default {

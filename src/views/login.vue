@@ -44,8 +44,9 @@
 export default {
   name: 'login',
   data () {
+    debugger;
     return {
-      captchUrl: '/captche/getCaptche?time=' + new Date(),
+      captchUrl: '/captcha?time=' + new Date(),
       loginForm: {
         username: 'admin',
         password: '123',
@@ -62,19 +63,21 @@ export default {
   },
   methods: {
     updateCapthUrl () {
-      this.captchUrl = '/captche/getCaptche?time=' + new Date()
+      this.captchUrl = '/captcha?time=' + new Date()
     },
     submitLoin () {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.postRequest('/login/login', this.loginForm).then(resp => {
+          this.postRequest('/login', this.loginForm).then(resp => {
             if (resp) {
               this.loading = true
               alert(resp)
+              debugger;
               console.log(resp)
-              const tokenStr = resp.tokenHead + resp.token
+              const tokenStr = resp.obj.tokenHead + ' ' + resp.obj.token
               window.sessionStorage.setItem('tokenStr', tokenStr)
-              this.$router.replace('/home')
+              let path = this.$route.query.redirect;
+              this.$router.replace((path == '/' || path == undefined) ? '/home' : path)
             }
           })
         } else {

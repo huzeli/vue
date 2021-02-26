@@ -1,9 +1,11 @@
 <template>
-  <div>高级资料</div>
+  <div>奖惩规则
+    ssssssssssssssssss
+  </div>
 </template>
 <script>
 export default {
-
+  name: 'EcMana'
 }
 </script>
 <style>

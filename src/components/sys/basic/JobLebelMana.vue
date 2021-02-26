@@ -1,9 +1,9 @@
 <template>
-  <div>高级资料</div>
+  <div>职称管理</div>
 </template>
 <script>
 export default {
-
+  name: 'JobLebelMana'
 }
 </script>
 <style>

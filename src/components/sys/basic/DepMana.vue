@@ -1,9 +1,9 @@
 <template>
-  <div>高级资料</div>
+  <div>部门管理</div>
 </template>
 <script>
 export default {
-
+  name: 'DepMana'
 }
 </script>
 <style>

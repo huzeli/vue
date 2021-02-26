@@ -4,7 +4,7 @@ import router from '../router'
 // 请求拦截器
 axios.interceptors.request.use(config => {
   if (window.sessionStorage.getItem('tokenStr')) {
-    config.headers['Authozation'] = window.sessionStorage.getItem('tokenStr');
+    config.headers['Authorization'] = window.sessionStorage.getItem('tokenStr');
   }
   return config
 }, onerror => {

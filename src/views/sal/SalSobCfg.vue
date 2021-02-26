@@ -1,5 +1,5 @@
 <template>
-  <div>高级资料</div>
+  <div>员工账套</div>
 </template>
 <script>
 export default {
