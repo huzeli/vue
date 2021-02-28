@@ -36,13 +36,13 @@ export default {
       activeName: 'PosMana'
     }
   },
-  components: [
+  components: {
     DepMana,
     EcMana,
     JobLebelMana,
     PosMana,
     PermissMana
-  ]
+  }
 }
 </script>
 <style>
