@@ -131,7 +131,6 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-
         this.deleteRequest('/system/basic/pos/' + data.id).then(resp => {
           if (resp) {
             this.initPositions()

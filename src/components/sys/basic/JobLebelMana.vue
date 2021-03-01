@@ -21,13 +21,21 @@
                  size="small"
                  icon="el-icon-plus"
                  @click="addJobLevel">添加</el-button>
+      <el-button type="danger"
+                 @click="deleteMany"
+                 size="small"
+                 :disabled="this.multipleSelection.length==0">批量删除</el-button>
     </div>
     <div style="margin-top:10px">
       <el-table :data="jls"
                 stripe
                 border
                 size="small"
-                style="width: 100%">
+                style="width: 100%"
+                @selection-change="handleSelectionChange">
+        <el-table-column type="selection"
+                         width="55">
+        </el-table-column>
         <el-table-column prop="id"
                          label="编号"
                          width="55">
@@ -133,14 +141,16 @@ export default {
         titleLevel: ''
       },
       updateJl: {
-        name: "",
-        titleLevel: ""
+        name: '',
+        titleLevel: '',
+        enabled: false
       },
       titileLevels: [
         '正高级', '副高级', '中级', '初级', '员级'
       ],
       jls: [],
-      dialogVisible: false
+      dialogVisible: false,
+      multipleSelection: []
     }
   },
   methods: {
@@ -182,7 +192,9 @@ export default {
       });
     },
     showEditView (data) {
+      Object.assign(this.updateJl, data)
       this.dialogVisible = true
+      this.updateJl.createDate = ''
     },
     doUpdate () {
       this.putRequest('/system/basic/joblevel/', this.updateJl).then(resp => {
@@ -191,6 +203,31 @@ export default {
           this.dialogVisible = false
         }
       })
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val;
+    },
+    deleteMany () {
+      this.$confirm('您是否删除[' + this.multipleSelection.length + ']条职称?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let ids = '?'
+        this.multipleSelection.forEach(item => {
+          ids += 'ids=' + item.id + '&'
+        })
+        this.deleteRequest('/system/basic/joblevel/' + ids).then(resp => {
+          if (resp) {
+            this.initJls()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   },
 

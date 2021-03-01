@@ -13,7 +13,7 @@ import { initMenu } from './util/menus'
 import 'font-awesome/css/font-awesome.css'
 
 Vue.config.productionTip = false
-Vue.use(ElementUI)
+Vue.use(ElementUI, { size: 'small' })
 /* eslint-disable no-new */
 Vue.prototype.postRequest = postRequest
 Vue.prototype.putRequest = putRequest
