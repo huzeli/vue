@@ -12,10 +12,16 @@
                  type="primary"
                  size="small"
                  @click="addPostions">添加</el-button>
+      <el-button size="small"
+                 type="danger"
+                 style="margin-left:20px"
+                 :disabled="this.multipleSelection.length==0"
+                 @click="deleteMany">批量删除</el-button>
     </div>
     <div class="posManaMain">
       <el-table :data="positions"
-                style="width: 70%">
+                style="width: 70%"
+                @selection-change="handleSelectionChange">
         <el-table-column type="selection"
                          width="55">
         </el-table-column>
@@ -45,10 +51,10 @@
                          width="80">
         </el-table-column> -->
       </el-table>
+
       <el-dialog title="提示"
                  :visible.sync="dialogVisible"
-                 width="30%"
-                 :before-close="handleClose">
+                 width="30%">
         <span>编辑职位</span>
         <div>
           <el-tag>职位名称</el-tag>
@@ -75,24 +81,22 @@ export default {
       pos: {
         name: ''
       },
-      positions: [{
-        id: '2016-05-02',
-        name: '王小虎',
-        createDate: '上海市普陀区金沙江路151弄'
-        // enabled: false
-      }, {
-        id: '2016-05-02',
-        name: '王小虎',
-        createDate: '上海市普陀区金沙江路1518弄'
-        // enabled: false
-      }],
+      positions: [],
       dialogVisible: false,
       updatePos: {
         name: ''
-      }
+      },
+      multipleSelection: []
     }
   },
   methods: {
+    initPositions () {
+      this.getRequest('/system/basic/pos/').then(resp => {
+        if (resp) {
+          this.positions = resp
+        }
+      })
+    },
     addPostions () {
       if (this.pos.name) {
         this.postRequest('/system/basic/pos/', this.pos).then(resp => {
@@ -103,36 +107,58 @@ export default {
         this.$message.error('职位名称不能为空！！！');
       }
     },
-    initPositions () {
-      this.postRequest('/system/basic/pos/').then(resp => {
-        if (resp) {
-          this.positions = resp
-        }
-      })
-    },
-    showEditView (index, data) {
-      Object.assign(this.updatePos.data)
-      this.updatePos.createDate = ''
-      this.dialogVisible = true;
-    },
     doUpdate () {
-      this.postRequest('/system/basic/pos/', this.updatePos).then(resp => {
+      this.putRequest('/system/basic/pos/', this.updatePos).then(resp => {
         if (resp) {
           this.initPositions()
           this.dialogVisible = false
         }
       })
     },
+    showEditView (index, data) {
+      debugger
+      Object.assign(this.updatePos, data)
+      this.updatePos.createDate = ''
+      this.dialogVisible = true;
+    },
+
     handleEdit (index, data) {
       console.log(index, data);
     },
     handleDelete (index, data) {
-      this.$confirm('您是否删除该职位?', '提示', {
+      this.$confirm('您是否删除[' + data.name + ']职位?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+
         this.deleteRequest('/system/basic/pos/' + data.id).then(resp => {
+          if (resp) {
+            this.initPositions()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+    },
+    deleteMany () {
+      this.$confirm('您是否删除[' + this.multipleSelection.length + ']条职位?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let ids = '?'
+        this.multipleSelection.forEach(item => {
+          ids += 'ids=' + item.id + '&'
+        })
+
+        this.deleteRequest('/system/basic/pos/' + ids).then(resp => {
           if (resp) {
             this.initPositions()
           }
