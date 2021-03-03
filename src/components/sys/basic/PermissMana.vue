@@ -12,7 +12,8 @@
       </el-input>
       <el-button type="primary"
                  icon="el-icon-plus"
-                 size="small">添加角色</el-button>
+                 size="small"
+                 @click="doAddRole">添加角色</el-button>
     </div>
     <div class="permissManaMain">
       <el-collapse accordion
@@ -28,12 +29,14 @@
               <span>可访问资源</span>
               <el-button style="float: right; padding: 3px 0;color:red"
                          type="text"
-                         icon="el-icon-delete"></el-button>
+                         icon="el-icon-delete"
+                         @click="doDeleteRole(r)"></el-button>
             </div>
             <div>
               <el-tree show-checkbox
                        node-key="id"
                        ref="tree"
+                       :key="index"
                        :default-checked-keys="selectedMenus"
                        :data="allMenus"
                        :props="defaultProps"></el-tree>
@@ -83,6 +86,9 @@ export default {
         this.initAllMenus()
         this.initSelectedMenus(rid)
       }
+      // else {
+      //   this.allMenus = []
+      // }
     },
     initAllMenus () {
       this.getRequest('/system/basic/permiss/menus').then(resp => {
@@ -114,6 +120,37 @@ export default {
     },
     cancleUpdate () {
       this.activeName = -1
+    },
+    doAddRole () {
+      if (this.role.name && this.role.nameZh) {
+        this.postRequest('/sytem/basic/permiss/', this.role).then(resp => {
+          if (resp) {
+            this.initRoles()
+            this.role.name = ''
+            this.role.nameZh = ''
+          }
+        })
+      } else {
+        this.$message.error('所有字段不能为空');
+      }
+    },
+    doDeleteRole (row) {
+      this.$confirm('您是否删除[' + row.nameZh + ']职位?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteRequest('/sytem/basic/permiss/' + row.id).then(resp => {
+          if (resp) {
+            this.initRoles()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   },
   mounted () {

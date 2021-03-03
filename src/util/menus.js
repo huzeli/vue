@@ -39,6 +39,7 @@ export const formatRoutes = (routes) => {
       iconCls: iconCls,
       children: children,
       component (resolve) {
+        debugger
         console.log(component)
         if (component.startsWith('Home')) {
           require(['../views/' + component + '.vue'], resolve)
